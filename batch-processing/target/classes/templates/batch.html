@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Batch</title>
+    <style>
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        /* Change the link color to #111 (black) on hover */
+        li a:hover {
+            background-color: #111;
+        }
+    </style>
+    <script src=https://code.jquery.com/jquery-3.6.0.js></script>
+    <script >
+        function batch1() {
+           try
+           {
+               var endpoint = "/api/test/batch";
+               var token = "Bearer " + $("#accessToken").val();
+
+               $.ajax({
+                   type: "GET",
+                   url: endpoint,
+                   headers: {
+                       authorization: token
+                   },
+                   contentType: "text/plain;charset=UTF-8",
+                   data: {},
+                   success: function(data)
+                   {
+                       $("#result").val(data);
+                   },
+                   error: function(errMsg)
+                   {
+                       var re = "Status:"+ errMsg.status;
+                       re = re + ", StatusText:"+ errMsg.statusText;
+                       re = re + ", ResponseText:"+ errMsg.responseText;
+
+                       $("#result").val(re);
+                   }
+               });
+           }
+           catch(e)
+           {
+               $("#result").val(e.message);
+           }
+        }
+    </script>
+</head>
+<body>
+<div>
+<ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/home/register">Register</a></li>
+    <li><a href="/home/batch">Batch Upload</a></li>
+    <li><a href="/home/list">Uploaded Data</a></li>
+    <li style="float:right"><a class="active" href="/home/login">Signin</a></li>
+</ul>
+</div>
+<div class="login" style="margin:10px">
+    <label>Access token</label><br>
+    <textarea id="accessToken" cols="100" rows="10"></textarea><br>
+    <label>End Point</label><br>
+    <input id="endpoint" value="/api/test/batch" width="200px"><br>
+    <label>File Path</label><br>
+    <input id="filePath" value="/resource/templates/sample.csv" width="300px"><br><br>
+    <input type="button" name="batchOperation" id="batchOperation" value="Upload" onclick="batch1()"><br><br>
+    <textarea id="result" cols="100" rows="10"></textarea><br>
+</div>
+</body>
+</html>

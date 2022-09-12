@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data</title>
+    <style >
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        /* Change the link color to #111 (black) on hover */
+        li a:hover {
+            background-color: #111;
+        }
+    </style>
+    <script src=https://code.jquery.com/jquery-3.6.0.js></script>
+    <script>
+        function list1() {
+            try
+            {
+                var token = "Bearer " + $("#accessToken").val();
+                $.ajax({
+                    type: "GET",
+                    url: "/api/test/list",
+                    headers: {
+                        authorization: token
+                    },
+                    contentType: "text/plain;charset=UTF-8",
+                    data: {},
+                    success: function(datas)
+                    {
+                        $(datas).each(function(index, data) {
+                            var row = '<tr>';
+                            row = row + "<td>"+ data.firstName + "</td>";
+                            row = row + "<td>"+ data.lastName + "</td>";
+                            row = row + "<td>"+ data.gpa + "</td>";
+                            row = row + "<td>"+ data.dob + "</td>";
+                            row = row + '</tr>';
+                            $("#result").append(row);
+                        });
+                    },
+                    error: function(errMsg)
+                    {
+                        var re = "Status:"+ errMsg.status;
+                        re = re + ", StatusText:"+ errMsg.statusText;
+                        re = re + ", ResponseText:"+ errMsg.responseText;
+                        alert(re);
+                    }
+                });
+            }
+            catch(e)
+            {
+                alert(e.message);
+            }
+        }
+    </script>
+</head>
+<body>
+<ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/home/register">Register</a></li>
+    <li><a href="/home/batch">Batch Upload</a></li>
+    <li><a href="/home/list">Uploaded Data</a></li>
+    <li style="float:right"><a class="active" href="/home/login">Signin</a></li>
+</ul>
+<div class="login" style="margin:10px">
+    <label>Access token</label><br>
+    <textarea id="accessToken" cols="100" rows="10"></textarea><br>
+    <label>End Point</label><br>
+    <input id="endpoint" value="/api/test/list"><br><br>
+    <input type="button" name="blist" id="blist" value="Show Result" onclick="list1()"><br><br>
+    <table id="result">
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>GPA</th>
+            <th>DOB</th>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    <style >
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        /* Change the link color to #111 (black) on hover */
+        li a:hover {
+            background-color: #111;
+        }
+    </style>
+    <script src=https://code.jquery.com/jquery-3.6.0.js></script>
+</head>
+<script>
+$( document ).ready(function() {
+    if(document.cookie != "")
+    {
+        $("#result").text(document.cookie);
+    }
+});
+ function login()
+ {
+   var username = "";
+   var password = "";
+
+   $("#result").val("");
+
+   if($("#Uname").val() == "")
+   {
+     $("#msg").text("UserName is required.");
+     return;
+   }
+   if($("#Pass").val() == "")
+   {
+     $("#msg").text("Password is required.");
+   }
+   username = $("#Uname").val();
+   password = $("#Pass").val();
+
+   try
+   {
+       $.ajax({
+           type: "POST",
+           url: "/api/auth/signin",
+           data: '{"username": "' + username + '", "password" : "' + password + '"}',
+           contentType: "application/json; charset=utf-8",
+           dataType: "json",
+           success: function(data)
+           {
+               var result = ""
+               result = result + "username : " + data.username;
+               result = result + ", email : " + data.email;
+               result = result + ", roles : " + data.roles;
+               result = result + ", accessToken : " + data.accessToken;
+               result = result + ", tokenType : " + data.tokenType;
+               $("#result").val(result);
+               document.cookie = result;
+           },
+           error: function(errMsg)
+           {
+               $("#result").val(errMsg.responseJSON.message);
+           }
+       });
+   }
+   catch(e)
+   {
+       $("#msg").text(e.message);
+   }
+ }
+
+</script>
+<body>
+<ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/home/register">Register</a></li>
+    <li><a href="/home/batch">Batch Upload</a></li>
+    <li><a href="/home/list">Uploaded Data</a></li>
+    <li style="float:right"><a class="active" href="/home/login">Signin</a></li>
+</ul>
+<div class="login" style="margin:10px">
+    <form id="login" method="get" action="login.php">
+        <label><b>User Name
+        </b>
+        </label>
+        <input type="text" name="Uname" id="Uname" placeholder="Username">
+        <br><br>
+        <label><b>Password &nbsp;&nbsp;
+        </b>
+        </label>
+        <input type="Password" name="Pass" id="Pass" placeholder="Password">
+        <br><br>
+        <input type="button" name="log" id="log" value="Log" style="margin-left: 80px" onclick="login()">
+        <span id="msg"></span>
+        <br><br>
+    </form>
+    <textarea id = "result" cols="100" rows="10"></textarea>
+    </div>
+</div>
+</body>
+</html>

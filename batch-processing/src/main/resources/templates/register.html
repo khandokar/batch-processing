@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <style>
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        /* Change the link color to #111 (black) on hover */
+        li a:hover {
+            background-color: #111;
+        }
+    </style>
+    <script src=https://code.jquery.com/jquery-3.6.0.js></script>
+    <script >
+        function register() {
+            try
+            {
+                $("#msg").text("");
+                var endpoint = "/api/auth/register";
+                var username = $("#userName").val();
+                var email = $("#email").val();
+                var password = $("#password").val();
+                var role = $("#role").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: endpoint,
+                    data: '{"username": "' + username + '", "email" : "' + email + '", "password" : "' + password + '", "role" : "' + role + '"}',
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function(data)
+                    {
+                        $("#msg").text(data.message);
+                        $("#userName").val("");
+                        $("#email").val("");
+                        $("#password").val("");
+                        $("#role").val("user");
+                    },
+                    error: function(errMsg)
+                    {
+                        var re = "Status:"+ errMsg.status;
+                        re = re + ", StatusText:"+ errMsg.statusText;
+                        re = re + ", ResponseText:"+ errMsg.responseText;
+
+                        $("#msg").text(re);
+                    }
+                });
+            }
+            catch(e)
+            {
+                $("#msg").text(e.message);
+            }
+        }
+    </script>
+</head>
+<body>
+<div>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/home/register">Register</a></li>
+        <li><a href="/home/batch">Batch Upload</a></li>
+        <li><a href="/home/list">Uploaded Data</a></li>
+        <li style="float:right"><a class="active" href="/home/login">Signin</a></li>
+    </ul>
+</div>
+<div class="d" style="margin:10px">
+    <ul style="background-color: white;clear:both">
+        <li style="clear: both">User Name must be between 3 and 20.</li>
+        <li style="clear: both">Email must be a well-formed.</li>
+        <li style="clear: both">Password must be between 6 and 40</li>
+    </ul><br><br>
+    <label>User Name</label><br>
+    <input id="userName" type="text" style="width: 200px"><br>
+    <label>Email</label><br>
+    <input id="email" type="text" style="width: 200px"><br>
+    <label>Password</label><br>
+    <input id="password" type="password" style="width: 200px"><br>
+    <label>Role</label><br>
+    <select name="role" id="role">
+        <option value="user" selected>User</option>
+        <option value="moderator">Moderator</option>
+        <option value="admin">Admin</option>
+    </select><br><br>
+    <input type="button" name="register" id="register" value="Register" onclick="register()"><br>
+    <span id="msg"></span>
+</div>
+</body>
+</html>
